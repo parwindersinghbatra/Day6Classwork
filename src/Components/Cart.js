@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './Cart.css'
 
-const Cart = ({ products, setProducts, setQuantity,  quantity}) => {
+const Cart = ({ products, setProducts, setQuantity,  quantity, totalCost}) => {
   
 const [total, setTotal] = useState(0);
 
@@ -28,7 +28,7 @@ function Decrease(id){
   tempProduct.map((product) =>{
 
 
-if(product.id === id && product.quantity >= 0 ) 
+if(product.id === id && product.quantity >= 1 ) 
     {
         product.quantity -= 1
       setTotal(total - product.price)
@@ -37,8 +37,15 @@ if(product.id === id && product.quantity >= 0 )
     return product;
   })
   
+  if(products.quantity === 0){
+    removeProduct(id)
+  }
+  else {
   // console.log(...tempProduct)
   setProducts([...tempProduct])
+  }
+
+
 }
 
 function removeProduct(id){
@@ -49,6 +56,7 @@ function removeProduct(id){
             setTotal(total - product.quantity * product.price)
             setQuantity(quantity - product.quantity)
         }
+       
         return product.id !== id
 
     })
@@ -57,15 +65,13 @@ function removeProduct(id){
   return (
     <>
     <div className='container'>
+    <header>
+        <h1>Shopping Cart</h1>
+    </header>
       { products.length <= 0 && <header><h3> is currently empty</h3></header> }
       {
         products.map((product, index) =>{
           return <div key={product.id}>
-            
-            <header>
-        <h1>Shopping Cart</h1>
-    </header>
-    
         <div className="product">
         {/* <img src="product2.jpg" alt="Product 2" /> */}
         <div className="product-details">
@@ -89,19 +95,21 @@ function removeProduct(id){
                 }
                 }>+</button>
             </div>
-          </div>
-          <div class="total">
-            Total:  {total} 
+          </div>        
+      </div>
+        })
+      }    
+      <div class="total">
+            {/* Total:  {total} 
+             */}
+             Total : {totalCost}
         </div>
+        
         <button className="checkout-btn" onClick={() => {
           setProducts([])
           setTotal(0)
           setQuantity(0)
         }}>Clear Cart</button>
-      </div>
-          
-        })
-      }    
     </div>
 </>
   )
